@@ -9,6 +9,7 @@ class Direction(str, Enum):
     """
     An enum to indicate which of the 5 line types should be rendered
     """
+
     up = "up"
     down = "down"
     left = "left"
@@ -34,12 +35,12 @@ class Number:
         """
         c.clear_drawing(self.name)
 
-    def regular_line(
-            self,
-            x_offset=0,
-            y_offset=0,
-            direction: Direction = Direction.left,
-            tag: str = None,
+    def draw_item(
+        self,
+        x_offset=0,
+        y_offset=0,
+        direction: Direction = Direction.left,
+        tag: str = None,
     ):
         """
         Creates a line in the number box in the digital clock format
@@ -51,16 +52,39 @@ class Number:
         """
         if tag is None:
             tag = str(direction.value)
-        translate = lambda coords: [coords[0] + x_offset, coords[1] + y_offset]
+        translate = lambda coords: [
+            coords[0] + x_offset,
+            coords[1] + y_offset,
+        ]
 
         if direction == Direction.left:
-            position = [(0.0, 0.0), (20.0, 20.0), (20.0, 60.0), (0.0, 80.0)]
+            position = [
+                (0.0, 0.0),
+                (20.0, 20.0),
+                (20.0, 60.0),
+                (0.0, 80.0),
+            ]
         elif direction == Direction.up:
-            position = [(0.0, 0.0), (20.0, 20.0), (60.0, 20.0), (80.0, 0.0)]
+            position = [
+                (0.0, 0.0),
+                (20.0, 20.0),
+                (60.0, 20.0),
+                (80.0, 0.0),
+            ]
         elif direction == Direction.down:
-            position = [(80.0, 20.0), (60.0, 0.0), (20.0, 0.0), (0.0, 20.0)]
+            position = [
+                (80.0, 20.0),
+                (60.0, 0.0),
+                (20.0, 0.0),
+                (0.0, 20.0),
+            ]
         elif direction == Direction.right:
-            position = [(20.0, 0.0), (0.0, 20.0), (0.0, 60.0), (20.0, 80.0)]
+            position = [
+                (20.0, 0.0),
+                (0.0, 20.0),
+                (0.0, 60.0),
+                (20.0, 80.0),
+            ]
         else:
             position = [
                 (0.0, 10.0),
@@ -103,15 +127,28 @@ class Number:
             y_pos=0,
         )
         with s.window("Drawing", **window_args):
-            c.add_drawing(self.name, width=90, height=150, )
+            c.add_drawing(
+                self.name, width=90, height=150
+            )
 
-        with s.window("command##window", autosize=True, y_pos=200, x_pos=0):
-            c.add_input_text(name="command##input", width=600, height=300, multiline=True, on_enter=True,
-                             callback=self.execute)
+        with s.window(
+            "command##window",
+            autosize=True,
+            y_pos=200,
+            x_pos=0,
+        ):
+            c.add_input_text(
+                name="command##input",
+                width=600,
+                height=300,
+                multiline=True,
+                on_enter=True,
+                callback=self.execute,
+            )
 
         c.start_dearpygui()
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     num = Number()
     num.run()

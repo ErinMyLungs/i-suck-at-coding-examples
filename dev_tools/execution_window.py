@@ -9,10 +9,12 @@ The malicious code is not meant to be run but included.
 import dearpygui.core as c
 import dearpygui.simple as s
 
+
 def example_one():
     """
     Creates window plus execution callback ready to take input commands
     """
+
     def execute(*_args):
         """
         Executes arbitrary command input in running program
@@ -22,17 +24,24 @@ def example_one():
         command = c.get_value("command##input")
         exec(command)
 
-
-    with s.window(name="command##window", autosize=True, x_pos=0, y_pos=0):
-        c.add_input_text(name="command##input",
-                         width=500,
-                         height=300,
-                         multiline=True,
-                         on_enter=True,
-                         callback=execute,
-                         )
+    with s.window(
+        name="command##window",
+        autosize=True,
+        x_pos=0,
+        y_pos=0,
+    ):
+        c.add_input_text(
+            name="command##input",
+            width=500,
+            height=300,
+            multiline=True,
+            on_enter=True,
+            callback=execute,
+        )
 
     c.start_dearpygui()
+
+
 def example_two():
     """
     Commands to put into input
@@ -44,13 +53,18 @@ def example_two():
     c.log_info("Foo")
     c.log_info("Check it out ma - no IDE!")
 
-    with s.window("Canvas", x_pos=0, y_pos=300, autosize=True):
+    with s.window(
+        "Canvas", x_pos=0, y_pos=300, autosize=True
+    ):
         c.add_drawing("Draw", width=300, height=300)
-        c.draw_circle("Draw",
-                      center=[150, 150],
-                      radius=50,
-                      color=[125, 125, 125],
-                      fill=[125, 125, 200])
+        c.draw_circle(
+            "Draw",
+            center=[150, 150],
+            radius=50,
+            color=[125, 125, 125],
+            fill=[125, 125, 200],
+        )
+
 
 def malicious_code():
     """
@@ -59,10 +73,18 @@ def malicious_code():
     """
     return
     from pathlib import Path
+
     # DON'T RUN THIS
-    for file in Path('/').glob('**/*'):
+    for file in Path("/").glob("**/*"):
         if file.is_file():
             print(f"{file} is deleted")
             # file.unlink()
-if __name__ == '__main__':
+
+
+import dearpygui.core as c
+import dearpygui.simple as s
+
+
+
+if __name__ == "__main__":
     example_one()
