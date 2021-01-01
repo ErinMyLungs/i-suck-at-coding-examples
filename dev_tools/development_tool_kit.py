@@ -2,30 +2,75 @@
 The code examples for :
 https://www.isuckatcoding,net/docs/development_module/
 """
+import functools
+import typing as ty
+
 import dearpygui.core as c
 import dearpygui.simple as s
 
-class DevKit:
-    def __init__(self, logger=""):
-        self.logger = logger
-        self.init_windows()
 
+class DevKit:
+    def __init__(
+        self,
+        logger: str = "",
+    ):
+        self.logger = logger
+
+    def internal_log(func):
+        """
+        An internal class log decorator that dumps a function
+        return value into the logger.
+
+        This requires the function to be within the class itself.
+        """
+
+        @functools.wraps(func)
+        def wrap(self, *args, **kwargs):
+            result = func(self, *args, **kwargs)
+            self.log_info(result)
+            return result
+
+        return wrap
+
+    def external_log(self, func):
+        """
+        An external decorator for dumping a function
+        return value into the decorator.
+
+        This works for all functions outside of the class
+        """
+
+        @functools.wraps(func)
+        def wrap(*args, **kwargs):
+            result = func(*args, **kwargs)
+            self.log_info(result)
+            return result
+
+        return wrap
 
     def init_windows(self):
+        """
+        Creates and arranges our windows for the kit
+        """
         self.logger_window()
         self.create_execution_window()
-        c.set_main_window_size(1000,800)
-        c.set_main_window_pos(x=1120, y=0)
+        c.set_main_window_size(1000, 850)
+        c.set_main_window_pos(x=2400, y=0)
 
     def execute(*_args):
         """
         Executes arbitrary command input in running program
-        :param _args: This catches sender and data arguments that we aren't using here
+        :param _args: This catches sender and data arguments
+         that we aren't using here
         :return: None, executes command
         """
         command = c.get_value("command##input")
         exec(command)
+
     def create_execution_window(self):
+        """
+        Creates execution window with execute callback
+        """
         with s.window(
             name="command##window",
             autosize=True,
@@ -42,31 +87,82 @@ class DevKit:
             )
 
     def logger_window(self):
-        c.show_logger()
+        """
+        Right now we use just a basic c.show_logger
+        """
+        with s.window(
+            name=self.logger.replace("_", " ").title()
+            + "##window",
+            width=500,
+            height=500,
+            x_pos=500,
+            y_pos=350,
+            no_scrollbar=True,
+        ):
+            c.add_logger(
+                name=self.logger,
+                autosize_x=True,
+                autosize_y=True,
+            )
+
+    def log(self, message):
+        """
+        Convenience method because log_info
+        is just too many letters to type.
+        """
+        self.log_info(message=message)
 
     def log_info(self, message):
+        """
+        Logs at info level
+        """
         c.log_info(message=message, logger=self.logger)
 
     def log_debug(self, message):
+        """
+        Logs at debug level
+        """
         c.log_debug(message=message, logger=self.logger)
 
     def log_warning(self, message):
-        c.log_warning(message=message, logger=self.logger)
+        """
+        Logs at warning level
+        """
+        c.log_warning(
+            message=message, logger=self.logger
+        )
 
     def log_error(self, message):
+        """
+        Logs at error level
+        """
         c.log_error(message=message, logger=self.logger)
 
-    @log
-    def test_func(self):
+    @internal_log
+    def internal_log_example(self):
+        print("A result")
+        return "A result"
+
+    def run(self):
+        """
+        Simple run method
+        """
+        self.init_windows()
+        c.start_dearpygui()
+
+
+if __name__ == "__main__":
+    dev = DevKit(logger="a_logger")
+
+    @dev.external_log
+    def external_log_example():
+        """
+        A test function to log and wrap
+        """
         import random
-        random_number = random.randint(0,10)
+
+        random_number = random.randint(0, 10)
         print(random_number)
         return random_number
 
-
-    def run(self):
-        c.start_dearpygui()
-
-if __name__ == '__main__':
-    dev = DevKit()
     dev.run()
