@@ -13,9 +13,9 @@ class DevKit:
     def __init__(
         self,
         logger: str = "",
+        exec_command = None
     ):
         self.logger = logger
-
     def internal_log(func):
         """
         An internal class log decorator that dumps a function
@@ -48,16 +48,16 @@ class DevKit:
 
         return wrap
 
-    def init_windows(self):
+    def init_windows(self, external_exec_command=None):
         """
         Creates and arranges our windows for the kit
         """
         self.logger_window()
-        self.create_execution_window()
+        self.create_execution_window(exec_command=external_exec_command)
         c.set_main_window_size(1000, 850)
         c.set_main_window_pos(x=2400, y=0)
 
-    def execute(*_args):
+    def execute(self, *_args):
         """
         Executes arbitrary command input in running program
         :param _args: This catches sender and data arguments
@@ -67,10 +67,11 @@ class DevKit:
         command = c.get_value("command##input")
         exec(command)
 
-    def create_execution_window(self):
+    def create_execution_window(self, exec_command = None):
         """
         Creates execution window with execute callback
         """
+        callback = self.execute if exec_command is None else exec_command
         with s.window(
             name="command##window",
             autosize=True,
@@ -83,7 +84,7 @@ class DevKit:
                 height=300,
                 multiline=True,
                 on_enter=True,
-                callback=self.execute,
+                callback=callback
             )
 
     def logger_window(self):
@@ -150,10 +151,8 @@ class DevKit:
         self.init_windows()
         c.start_dearpygui()
 
-
+dev = DevKit('an_example_logger')
 if __name__ == "__main__":
-    dev = DevKit(logger="a_logger")
-
     @dev.external_log
     def external_log_example():
         """
