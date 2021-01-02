@@ -12,9 +12,9 @@ class DevKit:
     def __init__(
         self,
         logger: str = "",
-        exec_command = None
     ):
         self.logger = logger
+
     def internal_log(func):
         """
         An internal class log decorator that dumps a function
@@ -28,7 +28,6 @@ class DevKit:
             result = func(self, *args, **kwargs)
             self.log_info(result)
             return result
-
         return wrap
 
     def external_log(self, func):

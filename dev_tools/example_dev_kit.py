@@ -22,13 +22,12 @@ class ExampleComponent:
         print('bar')
 
     def run(self):
-        # dev.init_windows(external_exec_command=self.execute)
-        dev.init_windows()
+        dev.init_windows(external_exec_command=self.execute)
+        # dev.init_windows()
         c.start_dearpygui()
 
 
 if __name__ == '__main__':
-
     # dev.init_windows(external_exec_command=lambda *args: exec(dev.command))
     ex = ExampleComponent()
     ex.run()
