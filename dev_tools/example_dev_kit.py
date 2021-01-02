@@ -11,9 +11,7 @@ class ExampleComponent:
     def __init__(self):
         ...
 
-    # def execute(self, *_args):
-    #     command = c.get_value("command##input")
-    #     exec(command)
+    execute = lambda self, *args: exec(dev.command)
 
     @dev.external_log
     def foo(self):
@@ -25,14 +23,12 @@ class ExampleComponent:
 
     def run(self):
         # dev.init_windows(external_exec_command=self.execute)
-        # dev.init_windows()
+        dev.init_windows()
         c.start_dearpygui()
 
 
 if __name__ == '__main__':
-    # def execute(*args):
-    #     command = c.get_value("command##input")
-    #     exec(command)
-    # dev.init_windows(external_exec_command=execute)
+
+    # dev.init_windows(external_exec_command=lambda *args: exec(dev.command))
     ex = ExampleComponent()
     ex.run()

@@ -3,7 +3,6 @@ The code examples for :
 https://www.isuckatcoding,net/docs/development_module/
 """
 import functools
-import typing as ty
 
 import dearpygui.core as c
 import dearpygui.simple as s
@@ -57,6 +56,15 @@ class DevKit:
         c.set_main_window_size(1000, 850)
         c.set_main_window_pos(x=2400, y=0)
 
+    @property
+    def command(self) -> str:
+        """
+        A simple property to make fetching command
+        input way easier.
+        :return: String of command to exec
+        """
+        return c.get_value("command##input")
+
     def execute(self, *_args):
         """
         Executes arbitrary command input in running program
@@ -64,8 +72,7 @@ class DevKit:
          that we aren't using here
         :return: None, executes command
         """
-        command = c.get_value("command##input")
-        exec(command)
+        exec(self.command)
 
     def create_execution_window(self, exec_command = None):
         """
@@ -139,16 +146,11 @@ class DevKit:
         """
         c.log_error(message=message, logger=self.logger)
 
-    @internal_log
-    def internal_log_example(self):
-        print("A result")
-        return "A result"
-
-    def run(self):
+    def run(self, external_exec_command=None):
         """
         Simple run method
         """
-        self.init_windows()
+        self.init_windows(external_exec_command=external_exec_command)
         c.start_dearpygui()
 
 dev = DevKit('an_example_logger')
