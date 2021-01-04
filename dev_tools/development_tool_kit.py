@@ -71,6 +71,9 @@ class DevKit:
         self.create_execution_window(
             exec_command=external_exec_command
         )
+        c.add_debug_window(
+            "Debugger", x_pos=0, y_pos=350, width=500
+        )
         c.set_main_window_size(1000, 850)
         c.set_main_window_pos(x=280, y=0)
 
@@ -118,7 +121,7 @@ class DevKit:
 
     def logger_window(self):
         """
-        Right now we use just a basic c.show_logger
+        Creating our logger window
         """
         with s.window(
             name=self.logger.replace("_", " ").title()
