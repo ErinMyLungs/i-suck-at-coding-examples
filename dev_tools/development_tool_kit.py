@@ -33,7 +33,7 @@ class DevKit:
 
         return wrap
 
-    def log_function(self, func):
+    def log_all(self, func):
         """
         A decorator for dumping a function's
         arguments and result into a logger
@@ -67,7 +67,7 @@ class DevKit:
         """
         Creates and arranges our windows for the kit
         """
-        self.logger_window()
+        self._logger_window()
         self.create_execution_window(
             exec_command=external_exec_command
         )
@@ -120,13 +120,16 @@ class DevKit:
                 callback=callback,
             )
 
-    def logger_window(self):
+    def _logger_window(self):
         """
         Creating our logger window
         """
+        window_name = (
+            self.logger.replace("_", " ").title()
+            + "##window"
+        )
         with s.window(
-            name=self.logger.replace("_", " ").title()
-            + "##window",
+            name=window_name,
             width=500,
             height=500,
             x_pos=500,
@@ -191,8 +194,8 @@ if __name__ == "__main__":
         This picks a random number, prints it in console
         and returns the picked value.
 
-        You should be able to see the same value in console
-        and in the logger.
+        You should be able to see the same value in
+        console and in the logger.
         """
         import random
 
@@ -200,7 +203,7 @@ if __name__ == "__main__":
         print(random_number)
         return random_number
 
-    @dev.log_function
+    @dev.log_all
     def echo_scream(string_to_echo, scream=True):
         """
         An example function to show args/Kwargs
@@ -213,4 +216,7 @@ if __name__ == "__main__":
         print(string_to_echo)
         return string_to_echo
 
+    external_log_example()
+    echo_scream("Just args string")
+    echo_scream("Args and kwargs", scream=False)
     dev.run()

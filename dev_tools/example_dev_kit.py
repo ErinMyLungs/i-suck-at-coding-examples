@@ -148,7 +148,7 @@ class ExampleComponent:
         self.update_data()
         c.delete_item("Add Data Window")
 
-    @dev.log_function
+    @dev.log_all
     def reset_data(self, sender, data):
         """
         Resets table data to default values
