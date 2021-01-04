@@ -15,33 +15,50 @@ class DevKit:
     ):
         self.logger = logger
 
-    def internal_log(func):
-        """
-        An internal class log decorator that dumps a function
-        return value into the logger.
-
-        This requires the function to be within the class itself.
-        """
-
-        @functools.wraps(func)
-        def wrap(self, *args, **kwargs):
-            result = func(self, *args, **kwargs)
-            self.log_info(result)
-            return result
-        return wrap
-
-    def external_log(self, func):
+    def log_return(self, func):
         """
         An external decorator for dumping a function
-        return value into the decorator.
-
-        This works for all functions outside of the class
+        return value into the logger.
         """
 
         @functools.wraps(func)
         def wrap(*args, **kwargs):
             result = func(*args, **kwargs)
+            self.log_info(
+                f"{func.__name__} return value:"
+            )
             self.log_info(result)
+            self.log_info("-" * 20)
+            return result
+
+        return wrap
+
+    def log_function(self, func):
+        """
+        A decorator for dumping a function's
+        arguments and result into a logger
+        """
+
+        @functools.wraps(func)
+        def wrap(*args, **kwargs):
+            name = func.__name__
+
+            # Logging Arguments
+            self.log_info(f"{name} Arguments:")
+            for argument in args:
+                self.log(f"\t{argument}")
+
+            # Logging kwargs if exist
+            if len(kwargs) > 0:
+                self.log(f"{name} Key Word Arguments:")
+                for key, value in kwargs.items():
+                    self.log(f"\t {key} : {value}")
+
+            # Logging Return Value
+            result = func(*args, **kwargs)
+            self.log(f"{name} Return Value:")
+            self.log(f"\t{result}")
+            self.log("-" * 20)
             return result
 
         return wrap
@@ -51,9 +68,11 @@ class DevKit:
         Creates and arranges our windows for the kit
         """
         self.logger_window()
-        self.create_execution_window(exec_command=external_exec_command)
+        self.create_execution_window(
+            exec_command=external_exec_command
+        )
         c.set_main_window_size(1000, 850)
-        c.set_main_window_pos(x=2400, y=0)
+        c.set_main_window_pos(x=280, y=0)
 
     @property
     def command(self) -> str:
@@ -73,11 +92,15 @@ class DevKit:
         """
         exec(self.command)
 
-    def create_execution_window(self, exec_command = None):
+    def create_execution_window(self, exec_command=None):
         """
         Creates execution window with execute callback
         """
-        callback = self.execute if exec_command is None else exec_command
+        callback = (
+            self.execute
+            if exec_command is None
+            else exec_command
+        )
         with s.window(
             name="command##window",
             autosize=True,
@@ -90,7 +113,7 @@ class DevKit:
                 height=300,
                 multiline=True,
                 on_enter=True,
-                callback=callback
+                callback=callback,
             )
 
     def logger_window(self):
@@ -149,20 +172,41 @@ class DevKit:
         """
         Simple run method
         """
-        self.init_windows(external_exec_command=external_exec_command)
+        self.init_windows(
+            external_exec_command=external_exec_command
+        )
         c.start_dearpygui()
 
-dev = DevKit('an_example_logger')
+
+dev = DevKit("an_example_logger")
 if __name__ == "__main__":
-    @dev.external_log
+
+    @dev.log_return
     def external_log_example():
         """
-        A test function to log and wrap
+        This picks a random number, prints it in console
+        and returns the picked value.
+
+        You should be able to see the same value in console
+        and in the logger.
         """
         import random
 
         random_number = random.randint(0, 10)
         print(random_number)
         return random_number
+
+    @dev.log_function
+    def echo_scream(string_to_echo, scream=True):
+        """
+        An example function to show args/Kwargs
+        :param string_to_echo: string to echo back
+        :param scream: if True run .upper() on string
+        :return: string echoed response
+        """
+        if scream is True:
+            string_to_echo = string_to_echo.upper()
+        print(string_to_echo)
+        return string_to_echo
 
     dev.run()
