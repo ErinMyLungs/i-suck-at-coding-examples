@@ -68,7 +68,7 @@ class DevKit:
         Creates and arranges our windows for the kit
         """
         self._logger_window()
-        self.create_execution_window(
+        self._command_window(
             exec_command=external_exec_command
         )
         c.add_debug_window(
@@ -96,7 +96,7 @@ class DevKit:
         """
         exec(self.command)
 
-    def create_execution_window(self, exec_command=None):
+    def _command_window(self, exec_command=None):
         """
         Creates execution window with execute callback
         """

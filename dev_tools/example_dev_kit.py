@@ -70,7 +70,7 @@ class ExampleComponent:
             "ymin": y_min - padding,
             "ymax": y_max + padding,
         }
-        # We return this to showcase the @dev.external_log decorator
+        # We return this to showcase the @dev.log_return decorator
         # It would likely be smarter to have the limits set in here
         return x_limits, y_limits
 
