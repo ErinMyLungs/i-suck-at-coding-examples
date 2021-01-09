@@ -153,7 +153,6 @@ class ExampleComponent:
         """
         Resets table data to default values
         """
-        dev.log_debug("Reset Called!")
         self.table_data = [[0, 0, 0], [1, 10, 20]]
         self.update_data()
 
